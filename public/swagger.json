@@ -1,0 +1,270 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API CRUD Laravel",
+    "version": "1.0.0",
+    "description": "API REST para gestión de usuarios y productos"
+  },
+  "servers": [
+    {
+      "url": "https://api-crud-laravel.onrender.com",
+      "description": "Servidor de producción"
+    },
+    {
+      "url": "http://127.0.0.1:8000",
+      "description": "Servidor local"
+    }
+  ],
+  "tags": [
+    { "name": "Usuarios",  "description": "Operaciones sobre usuarios" },
+    { "name": "Productos", "description": "Operaciones sobre productos" }
+  ],
+  "paths": {
+    "/api/users": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Listar todos los usuarios",
+        "responses": {
+          "200": {
+            "description": "Lista de usuarios obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Users retrieved successfully" },
+                    "status":  { "type": "integer", "example": 200 },
+                    "data":    { "type": "array", "items": { "$ref": "#/components/schemas/User" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Usuarios"],
+        "summary": "Crear un nuevo usuario",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "email", "phone", "password"],
+                "properties": {
+                  "name":     { "type": "string",  "example": "Juan García" },
+                  "email":    { "type": "string",  "example": "juan@correo.com" },
+                  "phone":    { "type": "string",  "example": "+503 7000-0000" },
+                  "password": { "type": "string",  "example": "12345678" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario creado correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": { "type": "string",  "example": "User created successfully" },
+                    "status":  { "type": "integer", "example": 201 },
+                    "data":    { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "422": { "description": "Error de validación" }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": ["Usuarios"],
+        "summary": "Obtener un usuario por ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuario encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": { "type": "string",  "example": "User retrieved successfully" },
+                    "status":  { "type": "integer", "example": 200 },
+                    "data":    { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { "description": "Usuario no encontrado" }
+        }
+      },
+      "put": {
+        "tags": ["Usuarios"],
+        "summary": "Actualizar un usuario",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name":     { "type": "string", "example": "Juan García" },
+                  "email":    { "type": "string", "example": "juan@correo.com" },
+                  "phone":    { "type": "string", "example": "+503 7000-0000" },
+                  "password": { "type": "string", "example": "nuevapass123" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Usuario actualizado correctamente" },
+          "404": { "description": "Usuario no encontrado" },
+          "422": { "description": "Error de validación" }
+        }
+      },
+      "delete": {
+        "tags": ["Usuarios"],
+        "summary": "Eliminar un usuario",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Usuario eliminado correctamente" },
+          "404": { "description": "Usuario no encontrado" }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": ["Productos"],
+        "summary": "Listar todos los productos",
+        "responses": {
+          "200": {
+            "description": "Lista de productos obtenida correctamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": { "type": "string",  "example": "Products retrieved successfully" },
+                    "status":  { "type": "integer", "example": 200 },
+                    "data":    { "type": "array", "items": { "$ref": "#/components/schemas/Product" } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Productos"],
+        "summary": "Crear un nuevo producto",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["name", "description", "price", "stock"],
+                "properties": {
+                  "name":        { "type": "string", "example": "Laptop Dell XPS 15" },
+                  "description": { "type": "string", "example": "Laptop de alta gama" },
+                  "price":       { "type": "number", "example": 1299.99 },
+                  "stock":       { "type": "number", "example": 25 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Producto creado correctamente" },
+          "422": { "description": "Error de validación" }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "tags": ["Productos"],
+        "summary": "Obtener un producto por ID",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Producto encontrado" },
+          "404": { "description": "Producto no encontrado" }
+        }
+      },
+      "put": {
+        "tags": ["Productos"],
+        "summary": "Actualizar un producto",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "name":        { "type": "string", "example": "Laptop Dell XPS 15" },
+                  "description": { "type": "string", "example": "Descripción actualizada" },
+                  "price":       { "type": "number", "example": 999.99 },
+                  "stock":       { "type": "number", "example": 10 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Producto actualizado correctamente" },
+          "404": { "description": "Producto no encontrado" },
+          "422": { "description": "Error de validación" }
+        }
+      },
+      "delete": {
+        "tags": ["Productos"],
+        "summary": "Eliminar un producto",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "example": 1 }
+        ],
+        "responses": {
+          "200": { "description": "Producto eliminado correctamente" },
+          "404": { "description": "Producto no encontrado" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id":         { "type": "integer", "example": 1 },
+          "name":       { "type": "string",  "example": "Juan García" },
+          "email":      { "type": "string",  "example": "juan@correo.com" },
+          "phone":      { "type": "string",  "example": "+503 7000-0000" },
+          "created_at": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" },
+          "updated_at": { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "id":          { "type": "integer", "example": 1 },
+          "name":        { "type": "string",  "example": "Laptop Dell XPS 15" },
+          "description": { "type": "string",  "example": "Laptop de alta gama" },
+          "price":       { "type": "number",  "example": 1299.99 },
+          "stock":       { "type": "number",  "example": 25 },
+          "created_at":  { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" },
+          "updated_at":  { "type": "string",  "example": "2024-01-01T00:00:00.000000Z" }
+        }
+      }
+    }
+  }
+}
